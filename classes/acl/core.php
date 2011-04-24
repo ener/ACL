@@ -66,14 +66,15 @@ abstract class Acl_Core {
 	 */
 	public function resources($roles)
 	{
+		$resources = array();
+
 		foreach($roles as $role)
 		{
-//			if(array_key_exists($role, $this->_acl))
-//			{
-//				$resources = $this->_acl[$role];
-//			}
+
+			;
 			foreach($this->_acl as $acl_line)
 			{
+
 				if($acl_line['role'] == $role)
 				{
 					$resources[ $acl_line['route'] . '.' . $acl_line['resource']] = array($acl_line['action'] => $acl_line['regulation']);
@@ -98,8 +99,8 @@ abstract class Acl_Core {
 		$route_defaults = Request::instance()->route->get_defaults();
 		$route_name = arr::get($_resource, 'route_name', 'default');
 		$resource = arr::get($_resource, 'resource', $route_defaults['controller']);
-
 		$resource_path = $route_name . '.' . $resource;
+
 
 		if( ! Arr::path($this->_resources, $resource_path, FALSE))
 		{
@@ -119,6 +120,12 @@ abstract class Acl_Core {
 			if( ! in_array($resource_path, $allowed_actions) AND $regulation != 'allow')
 			{
 				return FALSE;
+			}
+
+			if($action_name != 'all' or $regulation != 'allow') {
+				if(! in_array($action_name, $actions) or $regulation != 'allow'){
+					return FALSE;
+				};
 			}
 		}
 
